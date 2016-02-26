@@ -1,41 +1,41 @@
-Juration.js
+Juration-No.js
 ========
 
-A simple natural language duration parser written in javascript. Time ranges (in seconds) can also be converted to human readable strings. Check out the [demo](http://domchristie.github.com/juration).
+A simple natural language duration parser for Norwegian, written in javascript. Time ranges (in seconds) can also be converted to human readable strings. Check out the [demo](http://domchristie.github.com/juration) of the original english version.
 
-Inspired by [chronic](https://github.com/mojombo/chronic/), and [chronic_duration](https://github.com/hpoydar/chronic_duration).
+Forked from [Juration](https://github.com/domchristie/juration), which was inspired by [chronic](https://github.com/mojombo/chronic/) and [chronic_duration](https://github.com/hpoydar/chronic_duration).
 
 Usage
 -----
 
 ### Parsing
 
-    juration.parse("3mins 5secs"); // returns 185
+    juration.parse("3min 5sek"); // returns 185
 
 ### Stringifying
     
-    juration.stringify(185); // returns "3 mins 5 secs"
-    juration.stringify(185, { format: 'small' }); // returns "3 mins 5 secs"
+    juration.stringify(185); // returns "3 min 5 sek"
+    juration.stringify(185, { format: 'small' }); // returns "3 min 5 sek"
     juration.stringify(185, { format: 'micro' }); // returns "3m 5s"
-    juration.stringify(185, { format: 'long' });  // returns "3 minutes 5 seconds"
-    juration.stringify(185, { format: 'long', units: 1 });  // returns "3 minutes"
-    juration.stringify(3601, { format: 'micro', units: 2 });  // returns "1h"
+    juration.stringify(185, { format: 'long' });  // returns "3 minutter 5 sekunder"
+    juration.stringify(185, { format: 'long', units: 1 });  // returns "3 minutter"
+    juration.stringify(3601, { format: 'micro', units: 2 });  // returns "1t"
 
 Examples
 --------
 Parse-able strings:
 
-* 12.4 secs
-* 3 mins 4 sec
-* 2 hrs 20 min
-* 2h20min
-* 6 mos 1 day
-* 47 yrs 6 mos and 4d
-* 3 weeks and 2 days
+* 12.4 sekunder
+* 3 min 4 sek
+* 2 tmr 20 min
+* 2t20min
+* 6 mnd 1 day
+* 47 år 6 mnd and 4d
+* 3 uker og 2 dager
 
 Todo
 ----
-* Add customisable default unit option, e.g. `juration.parse("10", { defaultUnit: 'minutes' }) // returns 600`
+* Add customisable default unit option, e.g. `juration.parse("10", { defaultUnit: 'minutter' }) // returns 600`
 * Parse chrono format i.e. hh:mm:ss
 
 Licence
