@@ -1,6 +1,6 @@
 /*
  * juration-no - a natural language duration parser
- * https://github.com/domchristie/juration
+ * https://github.com/albertony/juration-no
  *
  * Copyright 2016, Albertony
  * Licenced under the MIT licence
