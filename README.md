@@ -40,4 +40,4 @@ Todo
 
 Licence
 -------
-Juration is copyright &copy; 2011 [Dom Christie](http://domchristie.co.uk) and released under the MIT license.
+Juration-no is forked from [Juration](https://github.com/domchristie/juration), which was created by [Dom Christie](http://domchristie.co.uk) and released under the MIT license. All other copyright for project Juration-no are held by [Albertony](https://github.com/albertony) &copy; 2016.
