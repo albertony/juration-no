@@ -72,7 +72,7 @@
       }
     },
     years: {
-      patterns: ['år', 'a'], // TODO: Wanted 'år?' so that one could use single-character 'å', but because the boundary character class (\b) in JavaScript regex does not handle non-ASCII characters this does not work! So the single character (micro) symbol is therefore 'a' (for anno?) instead.
+      patterns: ['år?', 'a'],
       value: 31536000,
       formats: {
         'chrono': ':',
@@ -136,19 +136,26 @@
     // returns calculated values separated by spaces
     for(var unit in UNITS) {
       for(var i = 0, mLen = UNITS[unit].patterns.length; i < mLen; i++) {
-        // TODO: The word boundary \b character class does not handle non-ascii characters like norwegian æøå correctly.
-        //   - Tried to rewrite the \b into an equivalent expression using lookbehind:
-        //        The boundary "\b" can be replaced by "(?<=\W)(?=\w)|(?<=\w)(?=\W)". The \w class represents
-        //        word characters, which in ascii is [A-Za-z0-9_], and \W is just the negated [^A-Za-z0-9_].
-        //        The idea was to replace \w to include the norwegian characters: [A-Za-z0-9_æøå], and \W negation
-        //        of that. For example like this:
-        //           var wordchars_no = 'A-Za-z0-9_æøå'
-        //           var boundary_no = '(?<=[^'+wordchars_no+'])(?=['+wordchars_no+'])|(?<=['+wordchars_no+'])(?=[^'+wordchars_no+'])'
-        //        The problem is that JavaScript does not support the positive lookbehind "?<=" assertion either, so
-        //        we are back at square one...
-        //        Until this is solved: The problematic cases are when the unit patterns are ending on æøå, so for instance
-        //        for year we cannot have 'å' as a pattern but 'år' works!
-        var regex = new RegExp("((?:\\d+\\.\\d+)|\\d+)\\s?(" + UNITS[unit].patterns[i] + "s?(?=\\s|\\d|\\b))", 'gi');
+        // Modified regex for norwegian non-ASCII characters (æøå) to cope with the fact that the word
+		// boundary \b character class does not handle these correctly. The class \b is equivalent to
+		// the regex "(?<=\W)(?=\w)|(?<=\w)(?=\W)", where \w represents word characters and \W is just
+		// a negation of that (non-word characters). The problem is that \w is equivalent to the character
+		// set "[A-Za-z0-9_]", so non-ASCII characters are not considered. We could replace the character
+		// set with "[A-Za-z0-9_æåø]" and substitute this back to into "(?<=\W)(?=\w)|(?<=\w)(?=\W)" to
+		// form an regex expression equivalent to \b but considering norwegian characters. The problem with
+		// this is that it uses the positive lookbehind "?<="  assertion, which is not supported in JavaScript
+		// so we are back at square one. But wait: Our complete regex is matching a number optionally followed
+		// by a space first, then the unit pattern consisting of word characters, before looking behind for
+		// a word boundary (or space or digit). This means the first part of the \b expression "(?<=\W)(?=\w)"
+		// will never be matched. The second part "(?<=\w)(?=\W)" is first looking behind for a word character,
+		// but assuming all our unit patterns only contain (or at least end with) word characters this will
+		// always be the case. So then we are left with the simple (?=\W) looking behind for non-word chararcters.
+		// If we replace this with (?=[^A-Za-z0-9_æøå]) then we have achieved the same thing as the original
+		// use of "\b" but now considering the norwegian non-ASCII characters!
+		// Update: Need to also check for the end of line anchor ($) since that is also part of the word boundary
+		// definition, but not covered by the character set rewrite. So we need to use: "([^A-Za-z0-9_æøå]|$)"
+        //var regex = new RegExp("((?:\\d+\\.\\d+)|\\d+)\\s?(" + UNITS[unit].patterns[i] + "(?=\\s|\\d|\\b))", 'gi');
+		var regex = new RegExp("((?:\\d+\\.\\d+)|\\d+)\\s?(" + UNITS[unit].patterns[i] + "(?=\\s|\\d|([^A-Za-z0-9_æøå]|$)))", 'gi');
         string = string.replace(regex, function(str, p1, p2) {
           return " " + (p1 * UNITS[unit].value).toString() + " ";
         });
